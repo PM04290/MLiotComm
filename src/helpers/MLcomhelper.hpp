@@ -18,6 +18,7 @@ class MLhelper_base {
 	virtual void onInternalTxDone(void(*callback)()) {};
 	virtual void setDint(uint8_t pin);
 	virtual void setRst(uint8_t pin);
+	virtual void setSS(uint8_t pin);
 
   protected:
   	static void onDintRise();

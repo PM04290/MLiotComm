@@ -495,6 +495,10 @@ class MLhelper_SX1278 : public MLhelper_base {
 	{
 		_reset = pin;
 	}
+	void setSS(uint8_t pin)
+	{
+		_ss = pin;
+	}
   private:
 	//static void onDintRise();
 #if !defined(__AVR_ATtiny84__)

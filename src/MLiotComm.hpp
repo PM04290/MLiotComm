@@ -167,11 +167,6 @@
 	#define RADIOHELPER MLhelper_SX1278
 #endif
 
-#if defined(ML_MAX485_PIN_RX) && defined(ML_MAX485_PIN_TX) && defined(ML_MAX485_PIN_DE)
-	#include "helpers/ML_MAX485.hpp"
-	#define RADIOHELPER MLhelper_MAX485
-#endif
-
 RADIOHELPER RLhelper;
 
 static rl_packet_t currentPacket;
@@ -180,7 +175,7 @@ void (*_onRxDone)(uint8_t,rl_packet_t*);
 void (*_onTxDone)();
 uint8_t _TXdone = 0;
 
-#if (ESP8266 || ESP32)
+#if (ESP32)
     #define ISR_PREFIX ICACHE_RAM_ATTR
 #else
     #define ISR_PREFIX
@@ -196,25 +191,7 @@ class iotCommClass
   public:
 	iotCommClass() {
 	}
-#if defined(ML_MAX485_PIN_RX) && defined(ML_MAX485_PIN_TX) && defined(ML_MAX485_PIN_DE)
-	bool begin(long baudrate, void(*callbackR)(uint8_t,rl_packet_t*), void(*callbackT)())
-	{
-	  _waitOnTx = true;
-	  _onRxDone = callbackR;
-	  _onTxDone = callbackT;
-	  if (RLhelper.begin(baudrate))
-	  {
-		RLhelper.onInternalRxDone(onRxDone);
-		RLhelper.onInternalTxDone(onTxDone);
-		
-		RLhelper.receiveMode();
-		return true;
-	  }
-	  return false;
-	}
-#endif
 	
-#if defined(ML_SX1278)
 	bool begin(long frequency, void(*callbackR)(uint8_t,rl_packet_t*), void(*callbackT)(), int TxLevel, uint8_t radioDistance)
 	{
 	  _waitOnTx = true;
@@ -232,7 +209,6 @@ class iotCommClass
 	  }
 	  return false;
 	}
-#endif
 
 	void end()
 	{
@@ -288,6 +264,10 @@ class iotCommClass
 
 	void setRst(uint8_t pin) {
 		RLhelper.setRst(pin);
+	}
+
+	void setSS(uint8_t pin) {
+		RLhelper.setSS(pin);
 	}
 
 	void setWaitOnTx(bool state)
